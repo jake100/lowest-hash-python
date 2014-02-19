@@ -16,14 +16,14 @@ def check_hash(threadID, curID, curHash):
 	for i in range(times):
 		newID = id_generator()
 		newHash = hashlib.sha512(newID).hexdigest()
-		#if the new hash is lower than the current one check the new one against the one on disk
+		#if the new hash is lower than the current one check the new one against the one in the text file
 		if newHash < curHash:
 			__location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
 			fo = open(os.path.join(__location__, 'hash.txt'), "r")
 			diskID = fo.readline()
 			diskHash = fo.readline()
 			fo.close()
-			#if the new hash is lower than the one on disk write the new one to the disk and print it to the screen else curID and curHash are replaced with their disk counterparts
+			#if the new hash is lower than the one in the text file then write the new one to text file and print it to the screen else curID and curHash are replaced with their counterparts from the text file
 			if newHash < diskHash:
 				curID = newID
 				curHash = newHash
@@ -36,14 +36,14 @@ def check_hash(threadID, curID, curHash):
 				curID = diskID
 				curHash = diskHash
 		#prints out how many hashes done compared to the total and also prints hashes per second
-		if i % (times / 4) == 0 and i > 0 or i == 500000:
+		if i % (times / 4) == 0 and i > 0 or i == 500000:# set to print once early on to gauge how fast the program is
 			end = time.time()
 			et = end - start
 			lps = i / et
 			print "hashes per second for this core = %f" % (lps)
 			print("%i - %i/%i...\n" % (threadID, i, times))
 if __name__ == '__main__':
-	#read starting id and hash from file
+	#read starting id and hash from file to be passed to the new processes
 	__location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
 	fo = open(os.path.join(__location__, 'hash.txt'), "r")
 	curID = fo.readline()
